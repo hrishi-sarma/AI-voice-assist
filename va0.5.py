@@ -14,7 +14,7 @@ import subprocess
 # Initialize Text-to-Speech Engine
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)  # Set the preferred voice
+engine.setProperty('voice', voices[1].id) 
 
 def talk(text):
     engine.say(text)
@@ -36,7 +36,7 @@ def take_command():
         return None
     return command.lower()
 
-# Initialize AI Clients
+
 groq_client = Groq(api_key="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")
 genai.configure(api_key='AIzaSyCz8-rZ2AXUfZRRkuqHJRLXyhqBsOBnsRU')
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
@@ -116,14 +116,24 @@ def vision_prompt(prompt, photo_path):
     return response.text
 
 def run_assistant():
+
     command = take_command()
 
-    
 
+    text_input = input("Enter command (or press Enter to use voice input): ")
+    if text_input:
+        command = text_input
+
+   
     if command:
+      
+        print(f"Command received: {command}")
+
+     
         call = function_call(command)
         visual_context = None  
 
+    
         if 'take screenshot' in call:
             print('Taking screenshot')
             take_screenshot()
@@ -141,8 +151,14 @@ def run_assistant():
             if clipboard_content:
                 command = f'{command}\n\n CLIPBOARD CONTENT: {clipboard_content}'
 
+       
         response = groq_prompt(prompt=command, img_context=visual_context)
-        talk(response)
+        
+       
+        print(response)  
+        talk(response)  
+    else:
+        print("No command detected.")
 
 if __name__ == "__main__":
     while True:
